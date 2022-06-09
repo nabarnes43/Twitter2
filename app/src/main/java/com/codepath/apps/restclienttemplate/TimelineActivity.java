@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -28,12 +30,13 @@ import javax.crypto.spec.PBEKeySpec;
 import okhttp3.Headers;
 
 public class TimelineActivity extends AppCompatActivity {
-
+    private SwipeRefreshLayout swipeContainer;
     private final int Request_Code = 20;
     public final String TAG = "Timeline Activity";
+    private EndlessRecyclerViewScrollListener scrollListener;
+
 
     TwitterClient client;
-    List<Tweet> tweets;
     RecyclerView rvTweets;
     TweetsAdapter adapter;
 
@@ -50,16 +53,41 @@ public class TimelineActivity extends AppCompatActivity {
         //Find the recycler view
         rvTweets = findViewById(R.id.rvTweets);
         //Init list of tweets and adapter
-        tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets);
+        adapter = new TweetsAdapter();
         //Recycler view setUp: layout manager and the adapter
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(llm);
         rvTweets.setAdapter(adapter);
-        populateHomeTimeline();
+
+        swipeContainer = findViewById(R.id.srlTimline);
+
+        swipeContainer.setOnRefreshListener(() -> {
+            adapter.clear();//clear the recycler view
+            // Your code to refresh the list here.
+            // Make sure you call swipeContainer.setRefreshing(false)
+            // once the network request has completed successfully.
+            populateHomeTimeline(null);
+        });
+
+        populateHomeTimeline(null);//Passing null becasuse we want the first 25.
+
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(llm) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Tweet lastTweetBeingDisplayed = adapter.getTweets().get(adapter.getTweets().size()-1);
+                String maxId = lastTweetBeingDisplayed.id;
+                populateHomeTimeline(maxId);
+            }
+        };
+
+        rvTweets.addOnScrollListener(scrollListener);
     }
 
     public List<Tweet> getTweets() {
-        return tweets;
+        return adapter.getTweets();
     }
 
     public boolean onCreateOptionsMenu (Menu menu) {
@@ -98,7 +126,7 @@ public class TimelineActivity extends AppCompatActivity {
             //Update the RV with the tweet
 
             //Modify data source
-            tweets.add(0, tweet);
+            adapter.addToTop(tweet);
             //Update the adapter
             adapter.notifyItemInserted(0);
             rvTweets.smoothScrollToPosition(0);
@@ -115,8 +143,8 @@ public class TimelineActivity extends AppCompatActivity {
 
     }
 
-    private void populateHomeTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void populateHomeTimeline(String maxId) {
+        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSucess " + json.toString());
@@ -124,7 +152,8 @@ public class TimelineActivity extends AppCompatActivity {
                 try {
                     Log.i(TAG, "onSucess"+ json.toString());
                    // List<Tweet> tweets = Tweet.fromJsonArray(jsonArray);
-                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.addAll(Tweet.fromJsonArray(jsonArray));
+                    swipeContainer.setRefreshing(false);//hides the spinner
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json Exception", e);

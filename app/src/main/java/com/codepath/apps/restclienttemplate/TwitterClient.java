@@ -50,7 +50,7 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 
 		if (maxId != null) {
-			params.put("max_id", "maxId");
+			params.put("max_id", maxId);
 		} else {
 			//Max id is null
 			//were going to ger the first 25 most recent tweets

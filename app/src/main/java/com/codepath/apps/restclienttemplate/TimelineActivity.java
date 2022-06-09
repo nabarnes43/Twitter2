@@ -35,13 +35,9 @@ public class TimelineActivity extends AppCompatActivity {
     public final String TAG = "Timeline Activity";
     private EndlessRecyclerViewScrollListener scrollListener;
 
-
     TwitterClient client;
     RecyclerView rvTweets;
     TweetsAdapter adapter;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +150,6 @@ public class TimelineActivity extends AppCompatActivity {
                    // List<Tweet> tweets = Tweet.fromJsonArray(jsonArray);
                     adapter.addAll(Tweet.fromJsonArray(jsonArray));
                     swipeContainer.setRefreshing(false);//hides the spinner
-                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json Exception", e);
                     e.printStackTrace();

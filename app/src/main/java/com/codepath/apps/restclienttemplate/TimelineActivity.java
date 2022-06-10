@@ -31,7 +31,7 @@ import okhttp3.Headers;
 
 public class TimelineActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
-    private final int Request_Code = 20;
+    public static final int Request_Code = 20;
     public final String TAG = "Timeline Activity";
     private EndlessRecyclerViewScrollListener scrollListener;
 

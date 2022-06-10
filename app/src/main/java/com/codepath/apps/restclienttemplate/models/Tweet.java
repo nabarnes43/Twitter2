@@ -24,7 +24,9 @@ public class Tweet {
     public User user;
     public String id;
     public String time;
-
+    public boolean isFavorited;
+    public boolean isRetweeted;
+    public int favoriteCount;
 
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
@@ -44,6 +46,11 @@ public class Tweet {
         }
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.time = tweet.getRelativeTimeAgo(tweet.createdAt);
+
+        tweet.isFavorited = jsonObject.getBoolean("favorited");
+        tweet.isRetweeted = jsonObject.getBoolean("retweeted");
+        tweet.favoriteCount= jsonObject.getInt("favorite_count");
+        tweet.id = jsonObject.getString("id_str");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         if (jsonObject.getJSONObject("entities").has("media")){
             tweet.bodyImage=jsonObject.getJSONObject("entities").getJSONArray("media").getJSONObject(0).getString("media_url_https");

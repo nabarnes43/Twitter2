@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,6 +59,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvScreenName;
         ImageView ivTwitterImage;
         TextView tvTimeStamp;
+        ImageButton ibFavorite;
+        TextView tvFavoriteCount;
 
 
         public ViewHolder (@NonNull View itemView) {
@@ -68,6 +71,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             ivTwitterImage = itemView.findViewById(R.id.ivTwitterImage);
             tvTimeStamp = itemView.findViewById(R.id.tvTimeStamp);
+            ibFavorite = itemView.findViewById(R.id.ibFavorite);
+            tvFavoriteCount = itemView.findViewById(R.id.tvFavoriteCount);
 
 
         }
@@ -85,6 +90,23 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivTwitterImage.setVisibility(View.VISIBLE);
                 Glide.with(ivTwitterImage.getContext()).load(tweet.bodyImage).into(ivTwitterImage);
             }
+            //Bind method is where you personalize individual clicks
+            ibFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //if not already favorite
+
+                    //tell Twitter I want to favorite this
+                    //change the drawable to btn_star_big_on
+                    //change the text inside tvFavoriteCount
+
+
+
+                    //else if already favorite tell twitter I want to unfavorite this
+                    //change the drawable back to btn_star_bug_off
+                    //decrement the text in tvFavoriteCount
+                }
+            });
 
 
 

@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        ImageView ivTwitterImage;
 
 
         public ViewHolder (@NonNull View itemView) {
@@ -63,15 +65,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            ivTwitterImage = itemView.findViewById(R.id.ivTwitterImage);
 
 
         }
 
         public void bind(Tweet tweet) {
-
+            Log.i("Here", tweet.body);
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
-            Glide.with(itemView).load(tweet.user.profileImageUrl).into(ivProfileImage);
+            Glide.with(ivProfileImage.getContext()).load(tweet.user.profileImageUrl).into(ivProfileImage);
+
+            if (tweet.bodyImage.equals("null")) {
+                ivTwitterImage.setVisibility(View.GONE);
+            } else {
+                ivTwitterImage.setVisibility(View.VISIBLE);
+                Glide.with(ivTwitterImage.getContext()).load(tweet.bodyImage).into(ivTwitterImage);
+            }
+
+            //Glide.with(ivTwitterImage.getContext()).load(tweet.bodyImage).into(ivTwitterImage);
 
 
 

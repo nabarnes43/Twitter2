@@ -47,8 +47,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://submissions.us-east-1.linodeobjects.com/metau_android/j_JwOniH.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
+![APP DEMO LINK] (Screenshots/Gif.gif)
 GIF created with [Kap](https://getkap.co/).
 
 ## Notes
